@@ -1,0 +1,98 @@
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
+/**
+ * CSS declarations for Google Docs Forms
+ *
+ * These can be copied and modified to fit the needs of
+ * a theme.  By default the only change is to make all of
+ * the fields wider than their default width and to set the
+ * default font.
+ */
+
+label.gform-error {
+    float: right;
+    color: red;
+    font-weight: bold;
+}
+
+div.gform-google-error,
+div.gform-browser-warning,
+div.gform-browser-error {
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0 .6em;
+    margin: 5px 0 15px;
+}
+
+div.gform-browser-warning {
+    background-color: #ffffe0;
+    border-color: #e6db55;
+}
+
+div.gform-google-error,
+div.gform-browser-error {
+    background-color: #ffebe8;
+    border-color: #cc0000;
+}
+
+body.ss-base-body {}
+div.errorbox-good {}
+div.ss-attribution {}
+div.ss-footer {}
+div.ss-footer-txt, div.ss-logo {
+    display: none;
+}
+
+div.ss-form {}
+div.ss-form-container {
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+}
+div.ss-form-desc {}
+div.ss-form-entry {}
+div.ss-form-entry>input {
+    background-color: #e0e0e0;
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+}
+div.ss-form-heading {}
+div.ss-item {}
+div.ss-legal {}
+div.ss-navigate {}
+div.ss-no-ignore-whitespace {
+    white-space: pre-wrap;
+}
+div.ss-required-asterisk {
+    color: red;
+    font-weight: bold;
+}
+div.ss-scale {}
+div.ss-text {}
+form#ss-form {}
+h1.ss-form-title {}
+hr.ss-email-break {}
+input.ss-q-short {
+	width: 300px;
+}
+label.ss-q-help {
+    display: block;
+}
+label.ss-q-radio {}
+label.ss-q-title {
+    font-weight: bold;
+}
+span.ss-powered-by {}
+span.ss-terms {}
+td.ss-gridnumber {}
+td.ss-gridnumbers {}
+td.ss-gridrow
+td.ss-gridrow-leftlabel
+td.ss-leftlabel {}
+td.ss-rightlabel {}
+td.ss-scalerow {}
+td.ss-scalenumber {}
+td.ss-scalenumbers {}
+textarea.ss-q-long {
+    background-color: #e0e0e0;
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+}
+tr.ss-gridrow {}
