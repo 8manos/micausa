@@ -3,8 +3,8 @@ Contributors: mpwalsh8
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DK4MS3AA983CC
 Tags: Google Forms, Google Docs, Google, Spreadsheet, shortcode, forms
 Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 0.31
+Tested up to: 3.4.2
+Stable tag: 0.45
 
 Embeds a published, public Google Form in a WordPress post, page, or widget.
 
@@ -31,7 +31,9 @@ Currently, this plugin only supports Google Forms that are "Published as a web p
 
 The WordPress Google Form shortcode `gform` supports a number of attributes that allow further control and customization of the Google Form.
 
-`[gform form='<full_url_to_Google_Form>' confirm='<full_url_to_confirmation_page>' class='<value>' legal='on|off' br='on|off' prefix='<value>' suffix='<value>' email='on|off' style='redirect|ajax']`
+`[gform form='<full_url_to_Google_Form>' confirm='<full_url_to_confirmation_page>' class='<value>' legal='on|off' br='on|off' prefix='<value>' suffix='<value>' email='on|off' sendto='<email address>' style='redirect|ajax' spreadsheet='<full_url_to_Google_Spreadsheet>' unitethemehack='on|off']`
+
+*NOTE:*  In the above syntax, values enclosed in angle brackets <>, indicate a string you need to replace with an appropriate value.  Do not include the angle brackets in your string!
 
 * __form__:  The full URL to the published Google Form.  You must be able to open this URL successfully from a browser for the __gform__ shortcode to work properly.
 * __confirm__:  A full URL to the confirmation (e.g. _Thanks for your submission!_) page.  Be default Google displays a very basic confirmation page which cannot be integrated easily with your WordPress site.  The _confirm_ attribute allows the form submission to land on a page of your choosing.  **It is strongly encouraged that you make use of a confirmation page.**  It will make the form submission process cleaner and clearer to the end user.  The confirmation page will be displayed by a page redirect unless a different behavior is specified using the __style__ attribute.
@@ -46,8 +48,12 @@ The WordPress Google Form shortcode `gform` supports a number of attributes that
 * __maph1h2__:  By default Google Forms have title wrapped in a &lt;h1&gt; tag.  If you want the form title but not as an &lt;h1&gt; element, add `maph1h2='on'` to your shortcode usage.  The &lt;h1&gt; elements will be mapped to &lt;h2&gt; elements.  The CSS class attributes remain unchanged.
 * __email__:  Notify the site's WordPress administrator (or sendto email address) that a form has been submitted by setting the __email__ attribute to __on__.  This will result in an email being sent to the blog administrator (or sendto email address) letting them know a form was submitted with the URL of the form along with the date and time of submission.
 * __sendto__:  Notify the "sendto" email address that a form has been submitted by setting the __email__ attribute to __on__.  This will result in an email being sent to the "sendto" letting them know a form was submitted with the URL of the form along with the date and time of submission.  The email message will always be sent to the blog administrator via Bcc.
+* __spreadsheet__:  The full URL to the "Shared" Google Docs Spreadsheet which stores the form responses.  You must be able to open this URL successfully from a browser for the link in the email to work properly.  This attribute is used in conjunction with the __email__ attribute, it has no effect when the __email__ attribute is not turned __on__.
+* __unitethemehack__:  Off by default, this attribute should be enabled, `unitethemehack='on'`, when using the [Unite theme from Paralleus](http://themeforest.net/item/unite-wordpress-business-magazine-theme/90959).  The Unite theme manipulates the submit button(s) on a page, the result of which is a button that prevents the Google form from being submitted.  Turning this attribute on enables a hack which inserts *class="noStyle"* to all submit buttons, preventing Unite from mucking with them.
+* __validation__:  Off by default, this attribute can be enabled, `validation='on'`, to add jQuery based form validation support using the [jQuery Validate Plugin](http://bassistance.de/jquery-plugins/jquery-plugin-validation/).  Enabling this optional attribute will allow inline checking without form submission to Google (which also does checking for required fields).  Error messages can be styled using the *gform-error* CSS class.
+* __captcha__:  Off by default, this attribute can be enabled, `captcha='on'`, to add a simple math based [CAPTCHA](http://en.wikipedia.org/wiki/CAPTCHA) to the Google Form.  The CAPTCHA only appears for the final submit on multi-page forms. The CAPTCHA error message can be styled using the *gform-error* CSS class.
 
-`[gform form='https://docs.google.com/spreadsheet/viewform?hl=en_US&pli=1&formkey=ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678#gid=0' confirm='http://www.example.com/thankyou/' style='ajax' class='mygform' legal='off' prefix='mygform-' br='on' title='on' maph1h2='on' email='on']`
+`[gform form='https://docs.google.com/spreadsheet/viewform?hl=en_US&pli=1&formkey=ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678#gid=0' confirm='http://www.example.com/thankyou/' style='ajax' class='mygform' legal='off' prefix='mygform-' br='on' title='on' maph1h2='on' email='on' spreadsheet='https://docs.google.com/spreadsheet/ccc?key=0AgBHWDGsX0PUdE56R1ZldXo4a0N3VTNMNEpSemdGV3c' unitethemehack='off' validation='on' captcha='on']`
 
 == Frequently Asked Questions ==
 
@@ -63,7 +69,7 @@ Google Forms include plenty of [CSS](http://en.wikipedia.org/wiki/Cascading_Styl
 
 There a number of reasons to get a 403 error but by far the most common one encountered so far is due to ModSecurity being installed by your web hosting provider.  Not all providers deploy ModSecurity but enough do that it comes up every once in a while.  If your provider is running ModSecurity and your version of the plugin is v0.30 or lower, you will likely see odd behavior where when the form is submitted, the page is simply rendered again and the data is never actually sent to Google.  There isn't any error message to indicate what might be wrong.
 
-Version 0.32 fixes this problem for *most* cases but there is still a chance that it could crop up.  If your provider has enabled ModSecurity AND someone answers one of the questions on your form with a URL (e.g. http://www.example.com), then very likely ModSecurity will kick in an issue a 403 error.  The plugin is now smart enough to detect when the error is issued and let you know what is wrong.  Unfortunately there isn't currently a solution to allow URLs as responses when ModSecurity issues a 403 error.
+Version 0.31 fixes this problem for *most* cases but there is still a chance that it could crop up.  If your provider has enabled ModSecurity AND someone answers one of the questions on your form with a URL (e.g. http://www.example.com), then very likely ModSecurity will kick in an issue a 403 error.  The plugin is now smart enough to detect when the error is issued and let you know what is wrong.  Unfortunately there isn't currently a solution to allow URLs as responses when ModSecurity issues a 403 error.
 
 = No matter what I do, I always get the "Unable to retrieve Google Form.  Please try reloading this page." error message.  Why is this? =
 
@@ -96,6 +102,12 @@ label.ss-q-title:after {
 
 = I don't like the redirection behavior of the custom confirmation, can you change it back to the way it worked in v0.10? =
 Unfortunately not.  I understand that the older behavior is preferable as it looks cleaner for the end user however there is no way to support multi-page Google Forms using the old model.  The requirement to support multi-page Google Forms is a higher priority than the older confirmation model based on the overwhelming feedback received to support multi-page forms.  In v0.26 a new confirmation behavior was introduced which uses AJAX to update the page with the content from the custom confirmation page.  In v0.27 the redirection mechanism has returned to be the default behavior but if the AJAX methodology is preferred, it is available by setting the `style='ajax'` attribute within the shortcode.
+
+= Can I change the range of values the CAPCTHA is based on? =
+Not at this time.
+
+= Can I change the math operator the CAPTCHA is based on? =
+Not at this time.
 
 == CSS ==
 
@@ -191,6 +203,62 @@ tr.ss-gridrow {}
 No known upgrade issues.
 
 == Changelog ==
+
+= Version 0.45 =
+* Updated load of jQuery UI Tabs CSS to latest version.
+* Moved generated jQuery script from part of the form to the WordPress wp_footer action.
+
+= Version 0.44 =
+* Fixed bug preventing options which are enabled by default from being turned off.
+
+= Version 0.43 =
+* Reimplemented shortcode attribute *br='on'* usinq jQuery instead of preg_replace().
+* Reimplemented shortcode attribute *legal='off'* usinq jQuery instead of preg_replace().
+* Fixed DEBUG mode so it will work with PHP 5.2 (which doesn't support anonymous functions).
+* Fixed CSS prefix bugs which prevented CSS prefix from being applied to all Google CSS classes.
+
+= Version 0.42 =
+* Fixed typos in ReadMe file.
+
+= Version 0.41 =
+* Added simple math based CAPTCHA support.
+* Reintroduced jQuery Validation for checking required fields.
+* Improved support for multiple forms on one page.
+* Fixed several bugs where CSS prefix, when used, was not output in some places.
+* Moved Debug control to their own tab on the settings page.
+* Added new Debug options to facilicate chasing down HTTP API issues.
+* Fixed bug where the CSS prefix, when used, was not being applied properly to elements which had more than one class.  Only the first class was properly prefixed.
+ 
+= Version 0.40 =
+* Removed leftover debug code.  Again.  :-(
+
+= Version 0.39 =
+* Added new attribute *unitedthemehack='on|off', which defaults to 'off'.  This attribute allows WordPress Google Form to work correctly with Paralleus' Unite theme (which mucks with the submit button(s) on the Google Form preventing the form from being submitted).
+ 
+= Version 0.38 =
+* Removed debug code left in from working on problem fixed in v0.36.
+
+= Version 0.37 =
+* Fixed inacuracies in ReadMe.txt file which caused repository not to show available update.
+
+= Version 0.36 =
+* Fixed a bug which appears when the Browser Check option is enabled.  There was a conflict in the server response from Google and the server response from WordPress due to overwriting a variable.
+* Fixed format of plain text email response when email is enabled for form submission.  The information in the email was being inserted into the template incorrectly.
+
+= Version 0.35 =
+* Changed format of email to use the title of the page/post instead of the permalink to the form.
+* Added new shortcode attribute __spreadsheet__.  The value __spreadsheet__ attribute is a full URL to a shared Google Docs Spreadsheet which contains the responses to the form.  A link to the Spreadsheet is included in the email notification when enabled.
+
+= Version 0.34 =
+* Fixed syntax error which caused plugin to fail.  Whoops.
+
+= Version 0.33 =
+* Fixed inacuracies in ReadMe.txt file.
+
+= Version 0.32 =
+* New option to control Bcc to blog admin when using email notification.  By default this option is enabled to allow plugin to behave as it has in prior versions.
+* Fixed bug in processing default plugin settings which are on by default.  New options which are on by default were not recognized.
+* Fixed activation bug which didn't set all of the default settings correctly.
 
 = Version 0.31 =
 * Separation of rendering and processing of the Google Form to better work with sites that make multiple calls to `do_shortcode()`.

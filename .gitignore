@@ -1,4 +1,5 @@
 .htaccess
+error_log
 wp-*.php
 xmlrpc.php
 wp-admin/
