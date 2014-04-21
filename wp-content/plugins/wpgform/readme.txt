@@ -1,20 +1,27 @@
-=== Plugin Name ===
+=== Google Forms ===
 Contributors: mpwalsh8
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DK4MS3AA983CC
 Tags: Google Forms, Google Docs, Google, Spreadsheet, shortcode, forms
-Requires at least: 3.0
-Tested up to: 3.4.2
-Stable tag: 0.45
+Requires at least: 3.7.1
+Tested up to: 3.8.3
+Stable tag: 0.65
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
 
 Embeds a published, public Google Form in a WordPress post, page, or widget.
 
 == Description ==
 
-Fetches a published Google Form using a `[gform form='']` WordPress shortcode, removes the Gooogle wrapper HTML and then renders it as an HTML form embedded in your blog post or page. The only required parameter is `form`, which specifies the form you'd like to retrieve. Recommended but optional, you can also pass a URL for a confirmation page.  The confirmation page will override the default Google`Thank You` page and offers better integration with your WordPress site.  You can also supply a customized `class` value for styling the form.
+Fetches a published Google Form using a WordPress custom post or shortcode, removes the Gooogle wrapper HTML and then renders it as an HTML form embedded in your blog post or page. When using Google Form post type, the *wpgform* shortcode accepts one parameter, *id*, which is the post id of the form.  When using the __deprecated__ *gform* shortcode, the only required parameter is `form` which is set to the URL to the Google Form URL.  Recommended but optional, you can also provide a custom URL for a confirmation page if you don't care for the default Google text.  The confirmation page will override the default Google `Thank You` page and offers better integration with your WordPress site.  There are a number of other options, refer to the documentation for further details.
 
 For example, suppose you want to integrate the form at `https://docs.google.com/spreadsheet/viewform?hl=en_US&pli=1&formkey=ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678#gid=0`, (not a real URL) use the following shortcode in your WordPress post or page:
 
+    [wpgform id='861']
+
     [gform form='https://docs.google.com/spreadsheet/viewform?hl=en_US&pli=1&formkey=ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678#gid=0']
+
+__Deprecated:__ use of the *gform* shortcode is __deprecated__ - please use the *wpgform* shortcode.
 
 Currently, this plugin only supports Google Forms that are "Published as a web page" and therefore public. Private Google Forms are not supported.
 
@@ -25,11 +32,23 @@ Currently, this plugin only supports Google Forms that are "Published as a web p
 1. Install using the WordPress Pluin Installer (search for `WordPress Google Form`) or download `WordPress Google Form`, extract the `wpgforms` folder and upload `wpgforms` to the `/wp-content/plugins/` directory.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Configure `WP Goolge Forms` from the `Settings` menu as appropriate.
-1. Use the `[gform form='<full_url_to_form>']` shortcode wherever you'd like to insert the Google Form.
+1. Recommended:  Create a Google Form Custom Post Type and then use the `[wpgform id='<Google Form CPT Id>']` shortcode wherever you'd like to insert the Google Form or simply publish the form and use it's permalink URL.
+1. Alternatively:  Use the `[gform form='<full_url_to_form>']` shortcode wherever you'd like to insert the Google Form.
 
 == Usage ==
 
-The WordPress Google Form shortcode `gform` supports a number of attributes that allow further control and customization of the Google Form.
+As features have been added, usage of the `gform` shortcode has grown increasing complex (the `gform` shortcode is now *deprecated*).  Begining with v0.46, a second shortcode, `wpgform` has been introduced in conjunction with a Custom Post Type to define forms deprecating usage of the `gform` shortcode. Usage of the new shortcode and Custom Post Type is much, much easier than the complexities of the original `gform` shortcode.  Users are strong encouraged to migrate usage to the new shortcode and Custom Post Type.  New features will only be added to the Custom Post Type usage model.
+
+The WordPress Google Form shortcode `wpgform` supports a single attribute.  The rest of the controls are derived from the information stored with the Custom Post Type.
+
+`[wpgform id='<Google Form CPT Id>' uid='<unique text string>']`
+
+*NOTE:*  In the above syntax, values enclosed in angle brackets <>, indicate a string you need to replace with an appropriate value.  Do not include the angle brackets in your string!
+
+* __id__:  The numeric id of the Google Form Custom Post Type.
+* __uid__:  A unique string (e.g. 'A-') used to ensure form element ID attributes are unique when a form appears on a page multiple times. (optional)
+
+The Google Form *deprecated* shortcode `gform` supports a number of attributes that allow further control and customization of the Google Form.
 
 `[gform form='<full_url_to_Google_Form>' confirm='<full_url_to_confirmation_page>' class='<value>' legal='on|off' br='on|off' prefix='<value>' suffix='<value>' email='on|off' sendto='<email address>' style='redirect|ajax' spreadsheet='<full_url_to_Google_Spreadsheet>' unitethemehack='on|off']`
 
@@ -41,7 +60,7 @@ The WordPress Google Form shortcode `gform` supports a number of attributes that
 * __alert__:  A message to display upon successful form submission in a Javascript Alert box (e.g. _Thanks for your submission!_).
 * __class__:  Google Forms are full of classes but the WordPress Google Form plugin does not bring their definitions into page when importing the form.  The _class_ attribute allows the addition of one or more CSS classes to the DIV which wraps the Google Form.  To add multiple classes, simply separate the class names with spaces.
 * __legal__:  By default Google Forms have a _Powered by Google Docs_ section at the bottom of the form which includes links to Google TOS and other Google information.  If you do not want to see this information as part of the form, add `legal='off'` to your shortcode usage.  The content remains in the form, it is simply hidden from the end user using CSS.
-* __br__:  For a <br> tag to be inserted between the form label and the input text box by setting the *br* attribute to *on*.  This will result in the form label and the input box being stacked on top of one another.
+* __br__:  For a &lt;br&gt; tag to be inserted between the form label and the input text box by setting the *br* attribute to *on*.  This will result in the form label and the input box being stacked on top of one another.
 * __prefix__:  Google Forms make use 20+ CSS classes.  If you use multiple forms and want to style them each differently, you can add a _prefix_ which will be added to beginning of each class name used in the Google Form.
 * __suffix__:  Append a character string to the end of each form label.  This can also be accomplished using CSS, refer to the CSS section.
 * __title__:  By default Google Forms have title wrapped in a &lt;h1&gt; tag.  If you do not want to include this form title as part of the form, add `title='off'` to your shortcode usage.  The &lt;h1&gt; content is removed from the form.
@@ -52,10 +71,27 @@ The WordPress Google Form shortcode `gform` supports a number of attributes that
 * __unitethemehack__:  Off by default, this attribute should be enabled, `unitethemehack='on'`, when using the [Unite theme from Paralleus](http://themeforest.net/item/unite-wordpress-business-magazine-theme/90959).  The Unite theme manipulates the submit button(s) on a page, the result of which is a button that prevents the Google form from being submitted.  Turning this attribute on enables a hack which inserts *class="noStyle"* to all submit buttons, preventing Unite from mucking with them.
 * __validation__:  Off by default, this attribute can be enabled, `validation='on'`, to add jQuery based form validation support using the [jQuery Validate Plugin](http://bassistance.de/jquery-plugins/jquery-plugin-validation/).  Enabling this optional attribute will allow inline checking without form submission to Google (which also does checking for required fields).  Error messages can be styled using the *gform-error* CSS class.
 * __captcha__:  Off by default, this attribute can be enabled, `captcha='on'`, to add a simple math based [CAPTCHA](http://en.wikipedia.org/wiki/CAPTCHA) to the Google Form.  The CAPTCHA only appears for the final submit on multi-page forms. The CAPTCHA error message can be styled using the *gform-error* CSS class.
+* __columns__:  The number of columns the form should be split into.  By default the form appears in a single column the same way it is designed in Google Docs.
 
-`[gform form='https://docs.google.com/spreadsheet/viewform?hl=en_US&pli=1&formkey=ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678#gid=0' confirm='http://www.example.com/thankyou/' style='ajax' class='mygform' legal='off' prefix='mygform-' br='on' title='on' maph1h2='on' email='on' spreadsheet='https://docs.google.com/spreadsheet/ccc?key=0AgBHWDGsX0PUdE56R1ZldXo4a0N3VTNMNEpSemdGV3c' unitethemehack='off' validation='on' captcha='on']`
+`[gform form='https://docs.google.com/spreadsheet/viewform?hl=en_US&pli=1&formkey=ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678#gid=0' confirm='http://www.example.com/thankyou/' style='ajax' class='mygform' legal='off' prefix='mygform-' br='on' title='on' maph1h2='on' email='on' spreadsheet='https://docs.google.com/spreadsheet/ccc?key=0AgBHWDGsX0PUdE56R1ZldXo4a0N3VTNMNEpSemdGV3c' unitethemehack='off' validation='on' captcha='on' columns='1']`
+
+== License ==
+
+This plugin is available under the GPL license, which means that it's free. If you use it for a commercial web site, if you appreciate my efforts or if you want to encourage me to develop and maintain it, please consider making a donation using Paypal, a secured payment solution. You just need to click the donate button on the the [plugin overview page](http://michaelwalsh.org/wordpress/wordpress-plugins/wpgform/) and follow the instructions.
 
 == Frequently Asked Questions ==
+
+= Why I do I have a "cURL transport missing" message on my Dashboard? =
+
+There was a change to the WordPress HTTP API in version 3.7 which resulted in wp_remote_post() no longer working with the streams and fsockopen transports when posting form data back to Google Docs.  The cURL transport does work reliably so a check has been added and a notification is issued when the cURL transport is missing.  This notification can be hidden by selecting the proper checkbox on the plugin settings page.
+
+= Will the plugin work without the cURL transport? =
+
+Up until WordPress 3.6.1, the plugin worked with any of the supported transports (streams, fsockopen, curl).  Currently only cURL is known to work properly.  You may have some success with other transports IF your form does not include checkboxes.  Checkboxes definitely do not work with anything but the cURL transport.
+
+= How can I add the cURL transport to WordPress? =
+
+The cURL transport is enabled by WordPress when PHP support for cURL is detected.  It isn't something which can be added to WordPress, it needs to be present in the PHP version your web server is running.  Contact your hosting provider to inquire about adding cURL support to PHP for your WordPress site.
 
 = The default style is ugly. Can I change it? =
 Yes, there are two ways to change the style (aka apearance) of the form.
@@ -65,11 +101,35 @@ Yes, there are two ways to change the style (aka apearance) of the form.
 
 Google Forms include plenty of [CSS](http://en.wikipedia.org/wiki/Cascading_Style_Sheets) hooks. Refer to the **CSS** section for further details on styling the form.  There are also some CSS solutions posted to questions users have raised in the Tips and Tricks section of [this page](http://michaelwalsh.org/wordpress/wordpress-plugins/wpgform/tips-and-tricks/).
 
+= Why are the buttons and some other text on form in Chinese (or some other language)? =
+
+This problem occurred fairly infrequently with the older version of Google Forms but with the upgrade in early 2013, it seems to happen much more often.  The solution to this problem depends on which URL format your published Google Form takes on (old or new).
+
+If your form URL looks like this, then you are using the older version of Google Forms:
+
+`https://docs.google.com/spreadsheet/viewform?formkey=dE56R1ZldXo4a0N3VTNMNEpSemdGV3c6MQ#gid=0`
+
+To force the language to English, you need to include the parameter **hl=en**.  Placement doesn't matter except it must appear before the #gid=0 (or similar syntax depending on which sheet you're using).  You will either need to prefix or append the & character to ensure the parameter is passed correctly.
+
+`https://docs.google.com/spreadsheet/viewform?formkey=dE56R1ZldXo4a0N3VTNMNEpSemdGV3c6MQ&hl=en#gid=0`
+
+If your form URL looks like this, then you are using the new version of Google Forms:
+
+`https://docs.google.com/forms/d/1iQndtNhFFiLHPdTpvuYKifdsxN7XQSFa9D8CsTU8aTc/viewform`
+
+To force the form to use English you would append **"?hl=en"** to the URL so it looks like this:
+
+`https://docs.google.com/forms/d/1iQndtNhFFiLHPdTpvuYKifdsxN7XQSFa9D8CsTU8aTc/viewform?hl=en`
+
+You can find an [example Google Form with French buttons](http://michaelwalsh.org/wordpress/wordpress-plugins/wpgform/sample-form-in-french/) on the plugin web site.
+
 = Why do I get a 403 error? =
 
 There a number of reasons to get a 403 error but by far the most common one encountered so far is due to ModSecurity being installed by your web hosting provider.  Not all providers deploy ModSecurity but enough do that it comes up every once in a while.  If your provider is running ModSecurity and your version of the plugin is v0.30 or lower, you will likely see odd behavior where when the form is submitted, the page is simply rendered again and the data is never actually sent to Google.  There isn't any error message to indicate what might be wrong.
 
 Version 0.31 fixes this problem for *most* cases but there is still a chance that it could crop up.  If your provider has enabled ModSecurity AND someone answers one of the questions on your form with a URL (e.g. http://www.example.com), then very likely ModSecurity will kick in an issue a 403 error.  The plugin is now smart enough to detect when the error is issued and let you know what is wrong.  Unfortunately there isn't currently a solution to allow URLs as responses when ModSecurity issues a 403 error.
+
+Some themes filter page content which could potentially affect forms.  If the filter modifies the Google Form HTML in such a way (e.g. changing the value of a hidden form variable) such that it is different that what Google is expecting upon form submission, a 403 error may result.
 
 = No matter what I do, I always get the "Unable to retrieve Google Form.  Please try reloading this page." error message.  Why is this? =
 
@@ -104,14 +164,17 @@ label.ss-q-title:after {
 Unfortunately not.  I understand that the older behavior is preferable as it looks cleaner for the end user however there is no way to support multi-page Google Forms using the old model.  The requirement to support multi-page Google Forms is a higher priority than the older confirmation model based on the overwhelming feedback received to support multi-page forms.  In v0.26 a new confirmation behavior was introduced which uses AJAX to update the page with the content from the custom confirmation page.  In v0.27 the redirection mechanism has returned to be the default behavior but if the AJAX methodology is preferred, it is available by setting the `style='ajax'` attribute within the shortcode.
 
 = Can I change the range of values the CAPCTHA is based on? =
-Not at this time.
+Not at this time.  However, you can choose between two (2) or three (3) terms for the CAPTCHA.
 
 = Can I change the math operator the CAPTCHA is based on? =
-Not at this time.
+Yes.  Beginning in v0.46 you can specify which operator(s) (+, -, *) the CAPTCHA will be based on.
+
+= How do specify which fields go in which columns when splitting a form across multiple columns? =
+This isn't possible.  The process of splitting the form into columns is automatic and will try to balance the colummn content.  You can rearrange the fields on the Google side to have some affect on their placement but there isn't any control over the exact column layout or where splits are inserted.
 
 == CSS ==
 
-As of 2011-09-21, Google Forms make use of 20+ CSS class definitions.  By default, the WordPress Google Form plugin includes CSS declarations for all of the classes however the bulk of them are empty.  The default CSS sets the font and makes the entry boxes wider.  The default CSS that ships with WordPress Google Form can optionally be turned off via the WordPress Google Form settings.
+Google Forms make use of 20+ CSS class definitions.  By default, the WordPress Google Form plugin includes CSS declarations for all of the classes however the bulk of them are empty.  The default CSS sets the font and makes the entry boxes wider.  The default CSS that ships with WordPress Google Form can optionally be turned off via the WordPress Google Form settings.
 
 = Customizing Google Form CSS =
 
@@ -122,14 +185,58 @@ There are two ways to customize the Google Form CSS.
 
 = Default Google Form CSS =
 
-As of 2012-01-07, the following is are the CSS classes which Google Forms make use of.  The CSS below represents the default CSS provided by WordPress Google Form.  These CSS definitions can be copied and pasted into your theme CSS or the WordPress Google Form custom CSS setting and changed as desired.
+As of 2013-12-04, the following is are the CSS classes which Google Forms make use of.  The CSS below represents the default CSS provided by WordPress Google Form.  These CSS definitions can be copied and pasted into your theme CSS or the WordPress Google Form custom CSS setting and changed as desired.  Some of the classes are redundant to account for both the new and old style of Google Forms.
 
 `
-label.gform-error {
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
+/**
+ * CSS declarations for Google Docs Forms
+ *
+ * These can be copied and modified to fit the needs of
+ * a theme.  By default the only change is to make all of
+ * the fields wider than their default width and to set the
+ * default font.
+ */
+
+label.gform-error,
+label.wpgform-error {
     float: right;
     color: red;
     font-weight: bold;
 }
+
+div.gform-captcha,
+div.wpgform-captcha {
+    margin: 5px 0px 10px;
+    display: none;
+}
+
+div.gform-browser-warning,
+div.gform-browser-error,
+div.wpgform-browser-warning,
+div.wpgform-browser-error {
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0 .6em;
+    margin: 5px 0 15px;
+}
+
+div.gform-browser-warning,
+div.wpgform-browser-warning {
+    background-color: #ffffe0;
+    border-color: #e6db55;
+}
+
+div.gform-google-error,
+div.gform-browser-error,
+div.wpgform-google-error,
+div.wpgform-browser-error {
+    background-color: #ffebe8;
+    border-color: #cc0000;
+}
+
 body.ss-base-body {}
 div.errorbox-good {}
 div.ss-attribution {}
@@ -164,7 +271,7 @@ div.ss-text {}
 form#ss-form {}
 h1.ss-form-title {}
 hr.ss-email-break {}
-input.ss-q-short {
+input.ss-q-short:text {
 	width: 300px;
 }
 label.ss-q-help {
@@ -190,6 +297,76 @@ textarea.ss-q-long {
     font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 }
 tr.ss-gridrow {}
+
+/**
+ * New Google Forms CSS 2013-04-30
+ */
+
+div.ss-form-container div.disclaimer {
+    display: none;
+}
+
+div.ss-q-help {
+}
+
+div.ss-secondary-text {
+}
+
+/*  This hides the "Never submit passwords through Google Forms." warning. */
+td.ss-form-entry > div.ss-secondary-text {
+    display: none;
+}
+
+div.password-warning {
+    display: none;
+}
+
+div.ss-form-container li {
+    list-style-type: none;
+}
+
+/*  2013-06-04:  Hide "Edit this Form" link */
+a.ss-edit-link {
+    display: none;
+}
+
+/*  2013-06-06:  Hide help text for scales */
+div.aria-only-help {
+    display: none;
+}
+
+/* 2013-10-30:  Hide default error messages */
+div.error-message {
+    display: none;
+}
+
+/* 2013-10-30:  Attempt to make text entry boxes a reasonable width */
+input.ss-q-short, textarea.ss-q-long {
+    width: auto;
+}
+
+/* 2013-11-15:  CSS to support using WordPress Google form to render spreadsheets */
+
+/**  Hide the gunk that Google adds to make the table work **/
+td.hd, td.headerEnd, tr.rShim, td.sortBar {
+    display: none;
+    width: 0px !important;
+    padding: 0px !important;
+}
+
+/**  Empty selector but could be used to select all of the table cells **/
+tr.rShim td, tr.rShim ~ tr td {
+}
+
+/**  Hide the "powered" and "listview" DIVs that Google adds **/
+div div span.powered, div.listview {
+    display: none;
+}
+
+/** Hide the "This is a required question" message **/
+div.ss-form-container div.required-message {
+    display: none;
+}
 `
 
 == Screenshots ==
@@ -202,7 +379,133 @@ tr.ss-gridrow {}
 
 No known upgrade issues.
 
-== Changelog ==
+== Change log ==
+
+= Version 0.65 =
+* Implemented "save_post" for custom post type eliminating general purpose "save_post" (only option prior to WordPress 3.7) action which could potentially, if not handled correctly by another plugin, corrupt post data.
+* Formally __deprecated__ the `gform` shortcode by updating README file.
+* Added flush of rewrite rules upon plugin activation and deactivation.
+* Implemented protocol relative URLs for loading jQuery script from Microsoft CDN to avoid mixed-content warnings when serving over https.
+* Fixed layout of CAPTCHA options on settings page.
+* Fixed bug with preset values as part of the URL which contain spaces.
+* Fixed bug sending End User email upon form submission.
+* Refactored construction of email headers based on experience with Email Users plugin.
+
+= Version 0.64 =
+* Fixed a number of strings which were missing translation wrapper functions.
+* Reverted to manually constructed body parameter for wp_remote_post() to allow checkboxes to be properly passed to Google.
+* Fixed warnings generated by calls to static functions which were not declared static.
+* Added check for HTTP API cURL transport and issue a warning when not present.  There was a change between WordPress 3.6.1 and 3.7 to the WordPress HTTP API and the streams and fsockopen transports are unable to post form values back to Google using wp_remote_post().
+* Added a setting to allow hiding the cURL transport missing message on the Dashboard.
+* Added a check to ensure jQuery script isn't output more than once.
+* Remove hook into "the_content" to reduce potential conflicts with other plugins (e.g. Wordpress SEO plugin by Yoast).
+* Added placeholders for some of the form fields when defining a Form within the UI.
+
+= Version 0.63 =
+* Refactored code to which assembles arguments for wp_remote_post() to construct the body argument as an array as opposed to a URL formatted string of concatenated parameters.  The long string was causing problems with newer versions of PHP.  The array of arguments is much cleaner (thanks to David Högborg for providing the basics of a patch).
+
+= Version 0.62 =
+* Failed to update stable release tag preventing v0.61 from rolling out.
+
+= Version 0.61 =
+* Fixed some default CSS rules which were incorrect.
+* Added support for multiple instances of the same form on a single page.
+
+= Version 0.60 =
+* Beta reference removed from version string.
+
+= Version 0.59 =
+* Added ability to preset values for Google form as part of WordPress URL.
+* Added new CSS declarations to default plugin CSS to account for recent changes by Google to Forms.
+* Added ability to define fields as "hidden" and preset with a user defined or system defined value.
+* Fixed validation limitation which only allowed one validation rule per input.
+* Added basic support (CSS, jQuery) to use WordPress Google Form to view a Google Spreadsheet within WordPress.
+
+= Version 0.58 =
+* Fixed bug when radio button and checkbox responses contained apostrophe characters.
+* Fixed bug when text entry box content contained an ampersand which ended up encoded in the Google sheet.
+* Fixed bug(s) with plugin settings which are controlled with checkboxes not being able to be unchecked.
+* Added Reset button to return plugin settings to their default state.
+* Fixed problem handling newlines (carriage returns) in textarea entries.
+
+= Version 0.57 =
+* Added ability to translate "What is" Captcha phrase.
+* Updated language translation files.
+
+= Version 0.56 =
+* Incorporated es_ES language support from TBD.
+* Incpororated Transient support patch from TBD.
+* Added support for UTF-8 characters in Google Forms.
+* Resolved bug with embedded tabs in form response values.
+* Improved handling of default settings for new form creation.
+* Added multi-site support for Transients.
+* Added support for the placeholder attribute on input tags.
+
+= Version 0.55 =
+Incporated a patch version of jQuery Columnizer to fix problem which appears in WordPress 3.6 which includes jQuery 1.10.
+
+= Version 0.54 =
+* Added internationalization support for jQuery Validation messages.
+* New language support files.
+* New jQuery Validation based custom validation option.
+* Fixed problem with escaped characters ending up in Google spreadsheet.
+* Moved transport control out of debug module and into core code so it can be a permanent setting for some server environments.
+* Fixed PHP warning messages which happen with Logging Enabled when some of the server variables don't exist.
+* Fixed bug with Form Submission Log setting stickiness.
+* Added an optional CAPTCHA message which will appear below the CAPTCHA input when set.
+
+= Version 0.53 =
+* Added CSS rule to hide Google's new Edit Link "feature".
+* Added support for link (A) elements with class attributes when call wp_kses().
+* Added CSS rule to suppress redudant information on Scale widgets.
+
+= Version 0.52 =
+* Fixed typos on Options page.
+* Fixed long standing bug with Default Options sometimes not initializing or saving correctly.
+
+= Version 0.51 =
+* Added FAQ content for common questions.
+* Updated CSS information to account for CSS changes in new Google Forms.
+
+= Version 0.50 =
+* Fixed jQuery syntax error which happens when validation is on but CAPTCHA and Email User is off.
+* Added new CSS to hide the "Never submit passwords through Google Forms." message by default.
+
+= Version 0.49 =
+* Inadvertently made help text invisible with CSS, updated default CSS accordingly.
+
+= Version 0.48 =
+* Fixed a Javascript error which occurs when using Google Default text overrides AND the form didn't have an "Other" radio button choice.
+
+= Version 0.47 =
+* Fixed jQuery syntax errors introduced in certain combinations of form options which resulted in the confirmation page not working.
+
+= Version 0.46 =
+* Added support for columns!  New *columns='N'* short code attribute will split the form into columns.
+* Fixed CSS for input fields so buttons are not 300px wide by default.
+* Began process of deprecating "gform" prefix which will be replaced with "wpgform" prefix for CSS classes.
+* Moved CAPTCHA (when in use) from below the submit button to above the submit button.
+* Added WordPress Google Form Custom Post Type.
+* Added new shortcode *wpgform* to support WordPress Google Form CPT.
+* Added error checking on wp_remote_post() to prevent confirmation page redirect when data wasn't actually posted successfully.
+* Added support for optional end user email field on forms.  When enabled, the user email is required and must be valid.  This feature is only available from the Google Forms CPT editor.
+* Migrated scraping of WordPress Plugin Repository content from wp_remote_get() and HTML parsing to use WordPress Plugin API eliminating potential problems with preg_match_all() which was prone to crashing on some installations.
+* Fixed jQuery syntax error in validation selector which caused CAPTCA jQuery not to run on some browsers (e.g. Chrome).
+* Added URL of page where form was submitted from to confirmation email.
+* Added support for logging form submissions as post meta data.
+* Fixed problems with multi-page Google forms introduced with re-design of Google Forms.
+* Added support for overriding the default Google Button and Required text.  This is useful when Google servers think the form should be rendered in a language that isn't the same as the rest of the form (e.g. Chinese).
+* Rearranged Options page to support new options.  Debug tab is now Advanced Options.
+* Fixed CAPCHA bug when validation wasn't specifically enabled.  CAPTCHA requires validation.
+* Added default CSS to suppress new Google Forms footer disclaimer.
+* Added more overrides for Google Default text (Hints for Radio Buttons and Check Boxes, the Other option for Radio Buttons).
+* Fixed a bug which lost current state of Override Settings which disabled overrides.
+* Added support for CAPTCHA operators (+, -, *)
+* Added support for three (3) CAPTCHA terms
+* Fixed Pagination bug when viewing the form submission log.
+* Re-arranged Options tabs so most common options are the Options tab, less common on the Advanced tab.
+* Added support for rendering forms on public CPT URLs.
+* Fixed odd Javascript syntax error which is only an issue with IE7.
 
 = Version 0.45 =
 * Updated load of jQuery UI Tabs CSS to latest version.
